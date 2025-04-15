@@ -1,7 +1,9 @@
 import React from 'react'
 import icon from '../assets/Icon.png'
+import { useNavigate } from 'react-router-dom'
 
-const GetStartPage = () => {   
+const GetStartPage = () => { 
+  const navigate = useNavigate();  
   return (
     <div className='flex flex-col justify-center items-center gap-4'>
         <div className='m-6 p-2'>
@@ -12,7 +14,7 @@ const GetStartPage = () => {
             <h1 className='text-3xl text-amber-400'>ForeCasts</h1>
         </div>
         <div className='pb-2'>
-            <button className='bg-amber-400 py-1 px-9 rounded-full font-medium cursor-pointer  hover:bg-amber-500 transition'>Get Start</button>
+            <button className='bg-amber-400 py-1 px-9 rounded-full font-medium cursor-pointer  hover:bg-amber-500 transition'onClick={()=> navigate('/main')}>Get Start</button>
         </div>
     </div>
   )
