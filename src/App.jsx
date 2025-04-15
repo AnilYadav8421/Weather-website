@@ -7,14 +7,12 @@ const App = () => {
   return (
     <Router>
       <div className='min-h-screen bg-gradient-to-b from-purple-700 to-purple-400 flex justify-center items-center'>
-        <Routes>
-          <Route path='/' element={
-            <div className='bg-gradient-to-b from-violet-950 via-violet-950 to-purple-500 rounded-2xl p-6 md:p-10 max-w-md shadow-lg'>
-              <GetStartPage />
-            </div>
-          } />
-          <Route path='/main' element={<MainPage />} />
-        </Routes>
+        <div className='bg-gradient-to-b from-violet-950 via-violet-950 to-purple-500 rounded-2xl p-6 md:p-10 max-w-md h-[470px] overflow-hidden shadow-lg'>
+          <Routes>
+            <Route path='/' element={<GetStartPage />} />
+            <Route path='/main' element={<MainPage />} />
+          </Routes>
+        </div>
       </div>
     </Router>
   )
