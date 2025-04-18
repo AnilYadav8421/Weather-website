@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import searchIcon from '../assets/search.png'
-import weather_Icon from '../assets/cloudy.png'
 
 const MainPage = () => {
-    // const hourlyData = [1, 2, 3, 4];
-
     const [weatherData, setWeatherData] = useState(null);
     const [city, setCity] = useState("Nashik");
-
+    const [searchCity, setSearchCity] = useState("Nashik")
     const [hourlyWeatherData, setHourlyWeatherData] = useState([]);
 
     useEffect(() => {
@@ -38,7 +35,7 @@ const MainPage = () => {
         }
         fethWeatherData();
         fetchHourlyData();
-    }, [city])
+    }, [searchCity])
     return (
         <div className='flex flex-col items-center space-y-6'>
             <div className='bg-gray-300 flex justify-between py-1 px-2 rounded-full mb-2'>
@@ -49,7 +46,12 @@ const MainPage = () => {
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
                 />
-                <img className='w-5 cursor-pointer' src={searchIcon} alt="search icon" />
+                <img
+                    className='w-5 cursor-pointer'
+                    src={searchIcon}
+                    alt="search icon"
+                    onClick={() => setSearchCity(city)}
+                />
             </div>
             {weatherData && (
                 <div>
