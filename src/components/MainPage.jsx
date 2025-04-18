@@ -3,10 +3,12 @@ import searchIcon from '../assets/search.png'
 import weather_Icon from '../assets/cloudy.png'
 
 const MainPage = () => {
-    const hourlyData = [1, 2, 3, 4];
+    // const hourlyData = [1, 2, 3, 4];
 
     const [weatherData, setWeatherData] = useState(null);
     const [city, setCity] = useState("Nashik");
+
+    const [hourlyWeatherData, setHourlyWeatherData] = useState([]);
 
     useEffect(() => {
         const fethWeatherData = async () => {
@@ -20,7 +22,22 @@ const MainPage = () => {
                 console.error("Error Fetching weather Data : ", error);
             }
         }
+
+        const fetchHourlyData = async () => {
+            const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
+            const url = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${API_KEY}&units=metric`;
+
+            try {
+                const resonse = await fetch(url);
+                const data = await resonse.json();
+                setHourlyWeatherData(data);
+                console.log(data);
+            } catch (error) {
+                console.error("Error from hourly data: ", error)
+            }
+        }
         fethWeatherData();
+        fetchHourlyData();
     }, [city])
     return (
         <div className='flex flex-col items-center space-y-6'>
@@ -41,40 +58,60 @@ const MainPage = () => {
             )}
             {weatherData && (
                 <div>
-                    <img className='w-24' src={`http://openweathermap.org/img/wn/${weatherData.weather[0].icon}.png`} alt='Weather Icon' />
+                    <img className='w-24' src={`https://openweathermap.org/img/wn/${weatherData.weather[0].icon}.png`} alt='Weather Icon' />
                 </div>
             )}
 
             {weatherData && (
                 <div className='text-white'>
-                <h1 className='text-3xl text-center '>{weatherData.main.temp}&deg;</h1>
-                <div>
-                    <h3 className='text-center'>{weatherData.weather[0].description}</h3>
-                    <div className='flex justify-between gap-5'>
-                        <h3>Max: {weatherData.main.temp_max}&deg;</h3>
-                        <h3>Min: {weatherData.main.temp_min}&deg;</h3>
+                    <h1 className='text-2xl text-center'>{weatherData.main.temp}&deg;</h1>
+                    <div>
+                        <h3 className='text-center'>{weatherData.weather[0].description}</h3>
+                        <div className='flex justify-between gap-3'>
+                            <h3>Max: {weatherData.main.temp_max}&deg;</h3>
+                            <h3>Min: {weatherData.main.temp_min}&deg;</h3>
+                        </div>
                     </div>
                 </div>
-            </div>
             )}
-            <div className='text-white'>
-                <div className='flex justify-between w-full gap-28 '>
-                    <h4>Today</h4>
-                    <h4>July, 21</h4>
-                </div>
-                <hr className='m-2' />
-                <div className='flex justify-evenly gap-3 text-center'>
-                    {
-                        hourlyData.map((idx) => (
-                            <div key={idx}>
-                                <p>19&deg;</p>
-                                <img className='w-5' src={weather_Icon} alt="" />
-                                <p >15:00</p>
+            {
+                hourlyWeatherData && hourlyWeatherData.list && (
+                    <div className='text-white'>
+                        <div className='flex justify-between gap-2'>
+                            <h4>Today</h4>
+                            <h4>{new Date(hourlyWeatherData.list[1].dt_txt).toLocaleDateString('en-US', {
+                                month: 'long',
+                                day: 'numeric'
+                            })}</h4>
+                        </div>
+                        <hr className='m-1' />
+                        {hourlyWeatherData && (
+
+                            <div className='flex justify-evenly gap-3 text-center'>
+                                {hourlyWeatherData.list.slice(0, 4).map((item, idx) => {
+                                    return (
+                                        <div key={idx}>
+                                            <p className='text-sm'>{Math.round(item.main.temp)}&deg;</p>
+                                            <img
+                                                className='w-8'
+                                                src={`https://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png`}
+                                                alt="icon"
+                                            />
+                                            <p className='text-xs'>
+                                                {new Date(item.dt_txt).toLocaleTimeString('en-US', {
+                                                    hour: '2-digit',
+                                                    minute: '2-digit',
+                                                    hour12: true
+                                                })}
+                                            </p>
+                                        </div>
+                                    );
+                                })}
                             </div>
-                        ))
-                    }
-                </div>
-            </div>
+                        )}
+                    </div>
+                )
+            }
         </div>
     )
 }
