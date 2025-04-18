@@ -28,7 +28,6 @@ const MainPage = () => {
                 const resonse = await fetch(url);
                 const data = await resonse.json();
                 setHourlyWeatherData(data);
-                console.log(data);
             } catch (error) {
                 console.error("Error from hourly data: ", error)
             }
@@ -50,10 +49,12 @@ const MainPage = () => {
                     className='w-5 cursor-pointer'
                     src={searchIcon}
                     alt="search icon"
-                    onClick={() => setSearchCity(city)}
+                    onClick={() => {
+                        setSearchCity(city)
+                    }}
                 />
             </div>
-            {weatherData && (
+            {weatherData && weatherData.sys && (
                 <div>
                     <h1 className='text-white'>{weatherData.name}, {weatherData.sys.country}</h1>
                 </div>
@@ -90,25 +91,30 @@ const MainPage = () => {
                         {hourlyWeatherData && (
 
                             <div className='flex justify-evenly gap-3 text-center'>
-                                {hourlyWeatherData.list.slice(0, 4).map((item, idx) => {
-                                    return (
-                                        <div key={idx}>
-                                            <p className='text-sm'>{Math.round(item.main.temp)}&deg;</p>
-                                            <img
-                                                className='w-8'
-                                                src={`https://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png`}
-                                                alt="icon"
-                                            />
-                                            <p className='text-xs'>
-                                                {new Date(item.dt_txt).toLocaleTimeString('en-US', {
-                                                    hour: '2-digit',
-                                                    minute: '2-digit',
-                                                    hour12: true
-                                                })}
-                                            </p>
-                                        </div>
-                                    );
-                                })}
+
+                                {hourlyWeatherData?.list?.length >= 4 && (
+                                    hourlyWeatherData.list.slice(0, 4).map((item, idx) => {
+                                        return (
+                                            <div key={idx}>
+                                                <p className='text-sm'>{Math.round(item.main.temp)}&deg;</p>
+                                                {weatherData?.weather?.[0]?.icon && (
+                                                    <img
+                                                        className='w-9'
+                                                        src={`https://openweathermap.org/img/wn/${weatherData.weather[0].icon}.png`}
+                                                        alt='Weather Icon'
+                                                    />
+                                                )}
+                                                <p className='text-xs'>
+                                                    {new Date(item.dt_txt).toLocaleTimeString('en-US', {
+                                                        hour: '2-digit',
+                                                        minute: '2-digit',
+                                                        hour12: true
+                                                    })}
+                                                </p>
+                                            </div>
+                                        );
+                                    })
+                                )}
                             </div>
                         )}
                     </div>
